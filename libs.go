@@ -65,17 +65,22 @@ func ExtractTarGz(tgzFile string, dirTo string) (int, error) {
 		case tar.TypeReg:
 			toName := filepath.Join(dirTo, header.Name)
 			outFile, err := os.Create(toName)
+
 			if err != nil {
 				return countSucc, fmt.Errorf("ExtractTarGz: Create() failed: %s, file: %s", err.Error(), toName)
 			}
-			defer outFile.Close()
+			// defer outFile.Close()
 
 			if _, err := io.Copy(outFile, tarReader); err != nil {
+				outFile.Close()
 				return countSucc, fmt.Errorf("ExtractTarGz: Copy() failed: %s, file: %s", err.Error(), toName)
 			}
+			outFile.Close()
+
 			if err := os.Chtimes(toName, header.ModTime, header.ModTime); err != nil {
 				return countSucc, fmt.Errorf("ExtractTarGz: Chtimes() failed: %s, file: %s", err.Error(), toName)
 			}
+
 			countSucc++
 		default:
 			return countSucc, fmt.Errorf(

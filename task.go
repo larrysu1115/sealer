@@ -46,12 +46,12 @@ func cmdDoUnarchive(flag CommandFlags) error {
 			continue
 		}
 
-		Lg.Infof("decompressing file: %s", file.Name())
 		filepath := filepath.Join(flag.DirSrc, file.Name())
 		cnt, err := ExtractTarGz(filepath, flag.DirTo)
 		if err != nil {
 			return fmt.Errorf("Cannot decompress file [%s]. err: %v", filepath, err)
 		}
+		Lg.Infof("decompressed %d files in %s", cnt, file.Name())
 		countUnarchived += cnt
 	}
 
@@ -61,7 +61,7 @@ func cmdDoUnarchive(flag CommandFlags) error {
 
 func cmdDoArchive(flag CommandFlags) error {
 	if flag.Prefix == "" {
-		return fmt.Errorf("Must set flag prefix!")
+		return fmt.Errorf("must set flag prefix")
 	}
 
 	Lg.Infof("start to archiving...")
